@@ -1,0 +1,32 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  PROJECT_NAME: "shuup-master"
+  DOCKER_IMAGE: "shuup-master"
+
+build:
+  stage: build
+  script:
+    - echo "Building the Docker image..."
+    - docker build -t $DOCKER_IMAGE .
+
+test:
+  stage: test
+  script:
+    - echo "Running tests..."
+    - pip3 install -r requirements-tests.txt
+    - pytest shuup/tests/
+
+deploy:
+  stage: deploy
+  only:
+    - main
+  script:
+    - echo "Deploying the application..."
+    - sudo docker stop $DOCKER_IMAGE
+    - sudo docker rm $DOCKER_IMAGE
+    - sudo docker build -t $DOCKER_IMAGE .
+    - sudo docker run -d -p 8000:8000 --name $PROJECT_NAME $DOCKER_IMAGE
