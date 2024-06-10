@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 15s 
+
+# Remove or comment out the alertmanagers block if not in use
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets: ["<alertmanager_address>:<alertmanager_port>"]
+
+#rule_files:
+#  - "recording_rules.yml"
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["host.docker.internal:9090"]
+  - job_name: "shuup"
+    static_configs:
+      - targets: ["host.docker.internal:8000"]
